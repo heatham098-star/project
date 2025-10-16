@@ -1,4 +1,7 @@
 # ToDo App with CI/CD Pipeline
+[![CI/CD for react Todo](https://github.com/heatham098-star/project/actions/workflows/app.yml/badge.svg)](https://github.com/heatham098-star/project/actions/workflows/app.yml)
+[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge)](https://heatham098-star.github.io/project/)
+
 
 A simple ToDo app built with React and integrated with a CI/CD pipeline using GitHub Actions. The app is automatically deployed to GitHub Pages whenever changes are pushed to the `main` branch.
 
