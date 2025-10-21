@@ -6,34 +6,62 @@ on:
       - main
 
 jobs:
-  # Build Job
-  build:
+  # المهمة الجديدة: فحص جودة الكود
+  lint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+      - name: Run Super-Linter for Code Quality
+        uses: github/super-linter@v5
+        env:
+          DEFAULT_BRANCH: main
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  # المهمة الجديدة: تشغيل الاختبارات
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
       - name: Install Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 18.x
-
       - name: Install Dependencies
         run: |
           cd todo
           npm install
+      - name: Run Tests
+        run: |
+          cd todo
+          npm test
 
+  # المهمة القديمة (مُعدَّلة): البناء
+  build:
+    needs: [lint, test] # <-- أهم تغيير: تعتمد على نجاح المهمتين الجديدتين
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+      - name: Install Dependencies
+        run: |
+          cd todo
+          npm install
       - name: Build Project
         run: |
           cd todo
           npm run build
-
       - name: Upload artifact to enable deployment
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./todo/build
 
-  # Deploy Job
+  # مهمة النشر (تبقى كما هي)
   deploy:
     needs: build
     permissions:
