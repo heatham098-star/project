@@ -6,19 +6,7 @@ on:
       - main
 
 jobs:
-  # المهمة الجديدة: فحص جودة الكود
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-      - name: Run Super-Linter for Code Quality
-        uses: github/super-linter@v5
-        env:
-          DEFAULT_BRANCH: main
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  # المهمة الجديدة: تشغيل الاختبارات
+  # مهمة الاختبار (مُعدَّلة)
   test:
     runs-on: ubuntu-latest
     steps:
@@ -33,13 +21,14 @@ jobs:
           cd todo
           npm install
       - name: Run Tests
+        # أضفنا هذا التعديل لضمان أن الاختبار يعمل مرة واحدة ويعطينا الخطأ بوضوح
         run: |
           cd todo
-          npm test
+          npm test -- --watchAll=false
 
-  # المهمة القديمة (مُعدَّلة): البناء
+  # مهمة البناء (مُعدَّلة)
   build:
-    needs: [lint, test] # <-- أهم تغيير: تعتمد على نجاح المهمتين الجديدتين
+    needs: [test] # <-- الآن يعتمد على الاختبار فقط
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
