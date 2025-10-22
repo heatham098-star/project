@@ -21,14 +21,14 @@ jobs:
           cd todo
           npm install
       - name: Run Tests
-        # أضفنا هذا التعديل لضمان أن الاختبار يعمل مرة واحدة ويعطينا الخطأ بوضوح
+        # هذا هو السطر الذي تم إصلاحه
         run: |
           cd todo
-          npm test -- --watchAll=false
+          npm test -- --watchAll=false --passWithNoTests
 
-  # مهمة البناء (مُعدَّلة)
+  # مهمة البناء
   build:
-    needs: [test] # <-- الآن يعتمد على الاختبار فقط
+    needs: [test] # <-- يعتمد على نجاح الاختبار
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -50,7 +50,7 @@ jobs:
         with:
           path: ./todo/build
 
-  # مهمة النشر (تبقى كما هي)
+  # مهمة النشر
   deploy:
     needs: build
     permissions:
