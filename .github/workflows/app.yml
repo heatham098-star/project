@@ -6,7 +6,19 @@ on:
       - main
 
 jobs:
-  # مهمة الاختبار (مُعدَّلة)
+  # المهمة 1: فحص جودة الكود (التي طلبتها)
+  code:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Run Super-Linter for Code Quality
+        uses: github/super-linter@v5
+        env:
+          DEFAULT_BRANCH: main
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # المهمة 2: تشغيل الاختبارات
   test:
     runs-on: ubuntu-latest
     steps:
@@ -21,14 +33,13 @@ jobs:
           cd todo
           npm install
       - name: Run Tests
-        # هذا هو السطر الذي تم إصلاحه
         run: |
           cd todo
           npm test -- --watchAll=false --passWithNoTests
 
-  # مهمة البناء
+  # المهمة 3: بناء المشروع
   build:
-    needs: [test] # <-- يعتمد على نجاح الاختبار
+    needs: [code, test] # <-- تغيير مهم: الآن يعتمد على نجاح "code" و "test"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -50,7 +61,7 @@ jobs:
         with:
           path: ./todo/build
 
-  # مهمة النشر
+  # المهمة 4: نشر المشروع
   deploy:
     needs: build
     permissions:
