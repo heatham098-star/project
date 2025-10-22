@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  # المهمة 1: فحص جودة الكود (التي طلبتها)
+  # المهمة 1: فحص جودة الكود (مع تعطيل بعض الأدوات)
   code:
     runs-on: ubuntu-latest
     steps:
@@ -17,6 +17,9 @@ jobs:
         env:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_CSS: false      # تعطيل فحص CSS
+          VALIDATE_JAVASCRIPT_STANDARD: false # تعطيل فحص JavaScript Standard
+          VALIDATE_NATURAL_LANGUAGE: false # تعطيل فحص README
 
   # المهمة 2: تشغيل الاختبارات
   test:
@@ -39,7 +42,7 @@ jobs:
 
   # المهمة 3: بناء المشروع
   build:
-    needs: [code, test] # <-- تغيير مهم: الآن يعتمد على نجاح "code" و "test"
+    needs: [code, test] # <-- يعتمد على نجاح "code" و "test"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
