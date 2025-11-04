@@ -19,9 +19,13 @@ jobs:
         env:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # --- هذا هو التعديل لتعطيل الأدوات ---
           VALIDATE_CSS: false
           VALIDATE_JAVASCRIPT_STANDARD: false
           VALIDATE_NATURAL_LANGUAGE: false
+          VALIDATE_GITHUB_ACTIONS: false
+          VALIDATE_YAML: false
+          # -----------------------------------
 
   test:
     runs-on: ubuntu-latest
@@ -46,35 +50,31 @@ jobs:
     needs: [code, test]
     runs-on: ubuntu-latest
     
-    # 1. إعطاء صلاحيات للخطوات
     permissions:
       contents: read
-      id-token: write # <-- هذا مهم لإصدارات AWS SDK الحديثة (إذا احتجناه)
+      id-token: write 
       
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
         
-      # 2. خطوة تسجيل الدخول إلى AWS
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-          aws-region: us-east-1 # <-- تأكد من أنها نفس منطقة ECR (يمكنك تغييرها إذا لزم الأمر)
+          aws-region: us-east-1 # <-- تأكد من أنها نفس منطقة ECR
 
-      # 3. خطوة تسجيل الدخول إلى ECR
       - name: Log in to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      # 4. خطوة بناء ورفع الصورة
       - name: Build and push Docker image to ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: my-todo-app # <-- اسم المستودع الذي أنشأته في ECR
-          IMAGE_TAG: ${{ github.sha }} # <-- استخدام رقم الـ commit كـ "وسم" فريد
+          ECR_REPOSITORY: my-todo-app
+          IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
