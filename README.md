@@ -8,10 +8,10 @@ A simple ToDo list app built with React, containerized with Docker, and deployed
 
 (يمكنك هنا وضع رسم بياني بسيط إذا أردت، أو تركها كنص)
 
-1.  **Code:** Pushed to GitHub Repository.
-2.  **CI/CD:** GitHub Actions triggers on push/pull request.
-3.  **Pipeline:** Runs `code` (lint) -> `test` (jest) -> `build_docker` (Docker build).
-4.  **(Future):** `push` (to AWS ECR) -> `deploy` (to AWS App Runner/ECS).
+1. **Code:** Pushed to GitHub Repository.
+2. **CI/CD:** GitHub Actions triggers on push/pull request.
+3. **Pipeline:** Runs `code` (lint) -> `test` (jest) -> `build_docker` (Docker build).
+4. **(Future):** `push` (to AWS ECR) -> `deploy` (to AWS App Runner/ECS).
 
 ---
 
@@ -32,14 +32,6 @@ A simple ToDo list app built with React, containerized with Docker, and deployed
 
 ## Instructions to Build and Run Locally
 
-1.  **Build the Docker image:**
-    ```bash
-    docker build -t devops-app .
-    ```
-
-2.  **Run the container:**
-    ```bash
-    docker run -p 8080:8080 devops-app
-    ```
-
-3.  Open your browser and navigate to `http://localhost:8080`.
+1. **Build the Docker image:**
+   ```bash
+   docker build -t devops-app .
