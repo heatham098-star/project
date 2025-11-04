@@ -1,33 +1,45 @@
-# ToDo App with CI/CD Pipeline
-[![CI/CD for react Todo](https://github.com/heatham098-star/project/actions/workflows/app.yml/badge.svg)](https://github.com/heatham098-star/project/actions/workflows/app.yml)
-[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge)](https://heatham098-star.github.io/project/)
+# DevOps Project: CI/CD Pipeline for React To-Do App
 
+A simple ToDo list app built with React, containerized with Docker, and deployed via a fully automated CI/CD pipeline using GitHub Actions and AWS.
 
-A simple ToDo app built with React and integrated with a CI/CD pipeline using GitHub Actions. The app is automatically deployed to GitHub Pages whenever changes are pushed to the `main` branch.
+---
 
-## CI/CD Workflow
+## Architecture
 
-The CI/CD pipeline automates the build and deployment process to GitHub Pages whenever changes are pushed to the `main` branch.
+(يمكنك هنا وضع رسم بياني بسيط إذا أردت، أو تركها كنص)
 
-### Workflow Steps
+1.  **Code:** Pushed to GitHub Repository.
+2.  **CI/CD:** GitHub Actions triggers on push/pull request.
+3.  **Pipeline:** Runs `code` (lint) -> `test` (jest) -> `build_docker` (Docker build).
+4.  **(Future):** `push` (to AWS ECR) -> `deploy` (to AWS App Runner/ECS).
 
-#### Build and Deploy
+---
 
-Whenever there is a push to the `main` branch, the workflow triggers a build job and deploys the app:
+## Technologies Used
 
-## Getting Started
+* **Application:** React, HTML/CSS
+* **Containerization:** Docker, Nginx
+* **CI/CD Platform:** GitHub Actions
+* **Cloud Hosting (Target):** AWS (ECR, ECS Fargate/App Runner)
 
-### Prerequisites
+---
 
-- Node.js and npm should be installed.
+## Collaborator
 
-### Live
-Access the live ToDo app [here](https://gayan-98.github.io/To-Do/).
+* **Collaborator:** FaycelElAyeb
 
-### Installation
+---
 
-   ```bash
-   git clone https://github.com/Gayan-98/To-Do.git
-   cd todo
-   npm install
-   npm start
+## Instructions to Build and Run Locally
+
+1.  **Build the Docker image:**
+    ```bash
+    docker build -t devops-app .
+    ```
+
+2.  **Run the container:**
+    ```bash
+    docker run -p 8080:8080 devops-app
+    ```
+
+3.  Open your browser and navigate to `http://localhost:8080`.

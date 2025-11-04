@@ -1,12 +1,14 @@
-name: CI/CD for react Todo
+name: DevOps Project CI/CD Pipeline
 
 on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  # المهمة 1: فحص جودة الكود (مع تعطيل بعض الأدوات)
   code:
     runs-on: ubuntu-latest
     steps:
@@ -17,11 +19,10 @@ jobs:
         env:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VALIDATE_CSS: false      # تعطيل فحص CSS
-          VALIDATE_JAVASCRIPT_STANDARD: false # تعطيل فحص JavaScript Standard
-          VALIDATE_NATURAL_LANGUAGE: false # تعطيل فحص README
+          VALIDATE_CSS: false
+          VALIDATE_JAVASCRIPT_STANDARD: false
+          VALIDATE_NATURAL_LANGUAGE: false
 
-  # المهمة 2: تشغيل الاختبارات
   test:
     runs-on: ubuntu-latest
     steps:
@@ -40,41 +41,17 @@ jobs:
           cd todo
           npm test -- --watchAll=false --passWithNoTests
 
-  # المهمة 3: بناء المشروع
-  build:
-    needs: [code, test] # <-- يعتمد على نجاح "code" و "test"
+  build_docker_image:
+    name: Build Docker Image
+    needs: [code, test]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-      - name: Install Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18.x
-      - name: Install Dependencies
-        run: |
-          cd todo
-          npm install
-      - name: Build Project
-        run: |
-          cd todo
-          npm run build
-      - name: Upload artifact to enable deployment
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./todo/build
 
-  # المهمة 4: نشر المشروع
-  deploy:
-    needs: build
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build the Docker image
+        run: |
+          docker build -t devops-app .
